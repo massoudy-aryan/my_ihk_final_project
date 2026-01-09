@@ -40,12 +40,12 @@ Das primäre Projektziel ist die Implementierung eines vollautomatisierten Syste
 ```plantuml
 @startuml project flow
 partition "1. Datengewinnung" {
-    :Lese SQL-Dateien aus Verzeichnis (definieren checks);
+    :Lese vordefinierte SQL-Check Dateien;
     :Führe Abfragen gegen Versio.io Datenbank aus;
 }
 
 partition "2. Aufbereitung" {
-    :Normalisiere Daten;
+    :Formatiere die Inhalte der SQL-Checks;
 }
 
 partition "3. Integration" {
@@ -55,11 +55,11 @@ partition "3. Integration" {
 partition "4. Ergebnis in Versio.io" {
     if (Verstoß liegt vor?) then (ja)
         :Erzeuge Violation;
-        :Q.A wird benachrichtigt;
-        stop
+        :Q.A. wird benachrichtigt;
     else (nein)
-        stop
+        :Keine Aktion erforderlich;
     endif
+    stop
 }
 @enduml
 
@@ -93,6 +93,7 @@ Technische Anforderungen:
 * MariaDB für Datenzugriff über connectionPool
 * REST-API-Integration für Versio.io
 * JSON als Datenformat
+*  Nutzung von Umgebungsvariablen für Datenbankzugriff und API
 
 ### 3.3. Welche Einschränkungen müssen berücksichtigt werden?
 
@@ -119,36 +120,39 @@ Außerdem  liegt ein besonderes Wert auf der Sicherheit, insbesondere bei der ge
 |  | Erstellung des Pflichtenhefts | 2 |  |
 | **Implementierung** | Erstellung der Struktur in bestehender Pipeline | 2 | **41** |
 |  | Implementierung Datenbank-Anbindung (Pool) | 3 |  |
-|  | Entwicklung SQL-Dateisystem-Scanner | 2 |  |
-|  | Implementierung paralleler Prozessor | 3 |  |
-|  | Realisierung Rate-Limiting-Mechanismus | 3 |  |
+|  | Entwicklung SQL-Dateisystem-Scanner | 3 |  |
+|  | Realisierung paralleler Prozessor für API-Calls | 3 |  |
+|  | Sicherstellung des Rate-Limiting-Mechanismus | 3 |  |
 |  | Implementierung Logik zur Ergebnisformatierung | 3 |  |
-|  | Entwicklung API-Schnittstelle (PUT-Requests) | 3 |  |
-|  | Implementierung robustes Fehlerhandling | 2 |  |
-|  | Integration strukturiertes Logging | 2 |  |
+|  | Entwicklung API-Schnittstelle (PUT-Requests) | 5 |  |
+|  | Implementierung robustes Fehlerhandling (Try-Catch) | 3 |  |
+|  | Integration strukturiertes Logging | 3 |  |
 |  | Erstellung Shell-Skript-Wrapper (main.sh) | 2 |  |
 |  | Konfiguration Umgebungsvariablen & Tokens | 2 |  |
-|  | Code-Refactoring & Performance-Optimierung | 3 |  |
-|  | Erstellung Beispiel-SQL-Queries & Tests | 3 |  |
-|  | Durchführung Modul- & Integrationstests | 8 |  |
+|  | Code-Refactoring & Performance-Optimierung | 4 |  |
+|  | Erstellung Beispiel-SQL-Queries & Tests | 5 |  |
 | **Abnahme** | Code-Review durch das Entwicklungsteam | 2 | **5** |
 |  | Abnahme durch Projektverantwortliche | 1 |  |
 |  | Erfolgskontrolle in der Entwicklungsumgebung | 1 |  |
-|  | Integration in die bestehende Pipeline | 1 |  |
+|  | Platzierung in die bestehende Pipeline | 1 |  |
 | **Dokumentation** | Erstellung der Projektdokumentation | 2 | **4** |
-|  | Erstellung der Entwicklerdokumentation | 1 |  |
-|  | Erstellung des Benutzerhandbuchs | 1 |  |
+|  | Schreibung der Entwicklerdokumentation | 1 |  |
+|  | Erfassung der Benutzerhandbuchs | 1 |  |
 | **Gesamt** |  |  | **70** |
 
+```mermaid
+%%{init: {'theme': 'base'}}%%
+pie title 
+    "Analyse (8h)" : 8
+    "Entwurf (12h)" : 12
+    "Implementierung (41h)" : 41
+    "Abnahme (5h)" : 5
+    "Dokumentation (4h)" : 4
 
+```
 
-
----
 
 ## 5. Name des Ausbilders, bzw. Projektverantwortlichen
 
-[Name hier eintragen]
 
----
 
-Soll ich dir dabei helfen, die noch leeren Abschnitte (Anforderungen, Zeitplanung) mit passenden Inhalten zu füllen?
