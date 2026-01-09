@@ -70,30 +70,29 @@ Ein zentraler Bestandteil ist die direkte Anbindung an die Versio.io-Plattform v
 Die technische Robustheit wird durch ein Logging aller Prüfvorgänge sowie eine dedizierte Fehlerbehandlung für Datenbank- und Schnittstellenkonflikte sichergestellt. Durch die Umsetzung des Projekts soll die manuelle Datenqualitätsprüfung reduziert werden, was zu erheblichen Zeit- und Kosteneinsparungen führt.
 
 ### 3.2. Welche Anforderungen müssen erfüllt sein?
+#### Funktionale Anforderungen:
+1. Ausführung von SQL-Queries aus konfigurierbaren SQL-Dateien
+1. Verarbeitung von Prüfergebnissen mit Parallelverarbeitung
+1. Generierung und zuschicken von Links für die betroffenen Produkte an die Versio.io API, wenn so im SQL bestimmt
+1. Gesicherte API-Aufrufe an Versio.io Platform mithilfe von Umgebungsvariabeln
+1. Textbereinigung fur die Beschreibungstext im SQL, damit sie auf Versio.io Oberfläche richtig generieret werden
+1. Error-Handling für fehlgeschlagene SQL-Queries und API-Aufrufe
+1. Rate-Limiting für API-Aufrufe, um das Server nicht zu belasten.
 
-Funktionale Anforderungen:
-* Ausführung von SQL-Queries aus konfigurierbaren SQL-Dateien
-* Verarbeitung von Prüfergebnissen mit Parallelverarbeitung
-* Generierung und zuschicken von Links für die betroffenen Produkte an die Versio.io API, wenn so im SQL bestimmt
-* Gesicherte API-Aufrufe an Versio.io Platform mithilfe von Umgebungsvariabeln
-* Textbereinigung fur die Beschreibungstext im SQL, damit sie auf Versio.io Oberfläche richtig generieret werden
-* Error-Handling für fehlgeschlagene SQL-Queries und API-Aufrufe
-* Rate-Limiting für API-Aufrufe, um das Server nicht zu belasten.
+#### Nicht-funktionale Anforderungen:
+1. Verarbeitung von den Gesamten SQL-checks in unter 10 Minuten
+1. 99%+ Erfolgsrate bei API-Übertragungen
+1. Vollständige Fehlerbehandlung und Recovery-Mechanismen
+1. Ausführliche Logging-Funktionalität mit strukturierten Ausgaben
+1. Modulare Architektur und Aufgabentrennung für einfache Erweiterung und Wartung
+1. Integration in bestehende Versio.io Pipeline-Struktur
 
-Nicht-funktionale Anforderungen:
-* Verarbeitung von den Gesamten SQL-checks in unter 10 Minuten
-* 99%+ Erfolgsrate bei API-Übertragungen
-* Vollständige Fehlerbehandlung und Recovery-Mechanismen
-* Ausführliche Logging-Funktionalität mit strukturierten Ausgaben
-* Modulare Architektur und Aufgabentrennung für einfache Erweiterung und Wartung
-* Integration in bestehende Versio.io Pipeline-Struktur
-
-Technische Anforderungen:
-* JavaScript/Node.js als Programmiersprache
-* MariaDB für Datenzugriff über connectionPool
-* REST-API-Integration für Versio.io
-* JSON als Datenformat
-*  Nutzung von Umgebungsvariablen für Datenbankzugriff und API
+#### Technische Anforderungen:
+1. JavaScript/Node.js als Programmiersprache
+1. MariaDB für Datenbankanbindung über connectionPool
+1. REST-API-Integration für Versio.io
+1. JSON als Datenformat
+1.  Nutzung von Umgebungsvariablen für Datenbankzugriff und API
 
 ### 3.3. Welche Einschränkungen müssen berücksichtigt werden?
 
@@ -110,11 +109,11 @@ Außerdem  liegt ein besonderes Wert auf der Sicherheit, insbesondere bei der ge
 | Phase | Aufgabe | Aufwand (h) | Summe (h) |
 | --- | --- | --- | --- |
 | **Analyse** | Analyse der Pipeline-Struktur und Architektur | 2 | **8** |
-|  | Analyse der API-Schnittstelle und Anforderungen | 2 |  |
-|  | Definition des standardisierten SQL-Formats | 2 |  |
-|  | Erstellung des Lastenhefts | 2 |  |
+|  | Die API-Schnittstelle und Anforderungen analysieren | 2 |  |
+|  | Feststellung des standardisierten SQL-Formats | 2 |  |
+|  | Vorbreitung des Projekt Lastenhefts | 2 |  |
 | **Entwurf** | Entwurf des Aktivitätsdiagramms (DQ-Prüfung) | 2 | **12** |
-|  | Entwurf Datenbank-Anbindung & Connection-Pooling | 2 |  |
+|  | Entwurf Datenbank-Anbindung und Connection-Pooling | 2 |  |
 |  | Ausarbeitung der Rate-Limiting-Strategie | 2 |  |
 |  | Entwurf API-Integration & Error-Handling | 4 |  |
 |  | Erstellung des Pflichtenhefts | 2 |  |
