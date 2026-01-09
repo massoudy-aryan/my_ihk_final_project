@@ -20,12 +20,12 @@ Versio.io betreibt eine komplexe Datenbank mit Produktlebenszyklus-Informationen
 
 Derzeit erfolgt die Datenqualitätsprüfung manuell, was folgende aufwand verursacht:
 
-* **Zeit:** Manuelle Überprüfung großer Datenmengen dauert mehrere Stunden täglich
-* **Fehleranfälligkeit:** Menschliche Fehler bei der Identifikation von Dateninkonsistenzen
-* **Skalierungsprobleme:** Mit wachsender Datenbank wird manuelle Prüfung zunehmend ineffizient
-* **Inkonsistenz:** Unterschiedliche Prüfkriterien je nach bearbeitendem Entwickler
-* **Verzögerte Problemerkennung:** Qualitätsprobleme werden oft erst spät entdeckt
-* **Hoher Personalaufwand:** Entwickler sind täglich mit manuellen Prüfungen beschäftigt
+* Zeit: Manuelle Überprüfung großer Datenmengen dauert mehrere Stunden täglich
+* Fehleranfälligkeit: Menschliche Fehler bei der Identifikation von Dateninkonsistenzen
+* Skalierungsprobleme: Mit wachsender Datenbank wird manuelle Prüfung zunehmend ineffizient
+* Inkonsistenz: Unterschiedliche Prüfkriterien je nach bearbeitendem Entwickler
+* Verzögerte Problemerkennung: Qualitätsprobleme werden oft erst spät entdeckt
+* Hoher Personalaufwand: Entwickler sind täglich mit manuellen Prüfungen beschäftigt
 
 ---
 
@@ -41,7 +41,7 @@ Das primäre Projektziel ist die Implementierung eines vollautomatisierten Syste
 @startuml project flow
 partition "1. Datengewinnung" {
     :Lese SQL-Dateien aus Verzeichnis (definieren checks);
-    :Führe Abfragen gegen **Versio.io Datenbank** aus;
+    :Führe Abfragen gegen Versio.io Datenbank aus;
 }
 
 partition "2. Aufbereitung" {
@@ -49,12 +49,12 @@ partition "2. Aufbereitung" {
 }
 
 partition "3. Integration" {
-    :Sende Daten via **REST API** an Versio.io;
+    :Sende Daten via REST API an Versio.io;
 }
 
 partition "4. Ergebnis in Versio.io" {
     if (Verstoß liegt vor?) then (ja)
-        :Erzeuge **Violation**;
+        :Erzeuge Violation;
         :Q.A wird benachrichtigt;
         stop
     else (nein)
@@ -71,46 +71,81 @@ Die technische Robustheit wird durch ein Logging aller Prüfvorgänge sowie eine
 
 ### 3.2. Welche Anforderungen müssen erfüllt sein?
 
-**Funktionale Anforderungen:**
-[Hier ergänzen]
+Funktionale Anforderungen:
+* Ausführung von SQL-Queries aus konfigurierbaren SQL-Dateien
+* Verarbeitung von Prüfergebnissen mit Parallelverarbeitung
+* Generierung und zuschicken von Links für die betroffenen Produkte an die Versio.io API, wenn so im SQL bestimmt
+* Gesicherte API-Aufrufe an Versio.io Platform mithilfe von Umgebungsvariabeln
+* Textbereinigung fur die Beschreibungstext im SQL, damit sie auf Versio.io Oberfläche richtig generieret werden
+* Error-Handling für fehlgeschlagene SQL-Queries und API-Aufrufe
+* Rate-Limiting für API-Aufrufe, um das Server nicht zu belasten.
 
-**Nicht-funktionale Anforderungen:**
-[Hier ergänzen]
+Nicht-funktionale Anforderungen:
+* Verarbeitung von den Gesamten SQL-checks in unter 10 Minuten
+* 99%+ Erfolgsrate bei API-Übertragungen
+* Vollständige Fehlerbehandlung und Recovery-Mechanismen
+* Ausführliche Logging-Funktionalität mit strukturierten Ausgaben
+* Modulare Architektur und Aufgabentrennung für einfache Erweiterung und Wartung
+* Integration in bestehende Versio.io Pipeline-Struktur
 
-**Technische Anforderungen:**
-[Hier ergänzen]
+Technische Anforderungen:
+* JavaScript/Node.js als Programmiersprache
+* MariaDB für Datenzugriff über connectionPool
+* REST-API-Integration für Versio.io
+* JSON als Datenformat
 
 ### 3.3. Welche Einschränkungen müssen berücksichtigt werden?
 
-[Hier ergänzen]
+Die bestehenden Datenbankoperationen von der Platform und die allgemeine Verfügbarkeit Versio.io haben dabei zu jeder Zeit Vorrang. Technisch soll sich die Lösung problemlos in die aktuelle MariaDB-Infrastruktur integrieren und direkt in die vorhandene Pipeline-Struktur eingegliedert.
+
+Ein zentraler Aspekt soll die Wahrung der Systemstabilität sein: Mithilfe von der Einhaltung der maximalen Request-Raten und eine nicht-belastende Abfragelogik soll sicher gemacht werden, das weder die erhaltende API noch die kritische Produktionsdatenbank übermäßig belastet werden.
+
+Außerdem  liegt ein besonderes Wert auf der Sicherheit, insbesondere bei der geschützten Handhabung von API-Token und Datenbank-Zugangsdaten, um die Integrität der gesamten Umgebung nicht zu komprimieren. Dies muss durch Umgebungsvariablen realisiert werden, und nicht direkt in den code geschreiben werden.
 
 ---
 
-## 4. Projektstrukturplan entwickeln
+## 4. Projektstrukturplan mit Zeitplanung
 
-### 4.1. Was ist zur Erfüllung der Zielsetzung erforderlich?
+| Phase | Aufgabe | Aufwand (h) | Summe (h) |
+| --- | --- | --- | --- |
+| **Analyse** | Analyse der Pipeline-Struktur und Architektur | 2 | **8** |
+|  | Analyse der API-Schnittstelle und Anforderungen | 2 |  |
+|  | Definition des standardisierten SQL-Formats | 2 |  |
+|  | Erstellung des Lastenhefts | 2 |  |
+| **Entwurf** | Entwurf des Aktivitätsdiagramms (DQ-Prüfung) | 2 | **12** |
+|  | Entwurf Datenbank-Anbindung & Connection-Pooling | 2 |  |
+|  | Ausarbeitung der Rate-Limiting-Strategie | 2 |  |
+|  | Entwurf API-Integration & Error-Handling | 4 |  |
+|  | Erstellung des Pflichtenhefts | 2 |  |
+| **Implementierung** | Erstellung der Struktur in bestehender Pipeline | 2 | **41** |
+|  | Implementierung Datenbank-Anbindung (Pool) | 3 |  |
+|  | Entwicklung SQL-Dateisystem-Scanner | 2 |  |
+|  | Implementierung paralleler Prozessor | 3 |  |
+|  | Realisierung Rate-Limiting-Mechanismus | 3 |  |
+|  | Implementierung Logik zur Ergebnisformatierung | 3 |  |
+|  | Entwicklung API-Schnittstelle (PUT-Requests) | 3 |  |
+|  | Implementierung robustes Fehlerhandling | 2 |  |
+|  | Integration strukturiertes Logging | 2 |  |
+|  | Erstellung Shell-Skript-Wrapper (main.sh) | 2 |  |
+|  | Konfiguration Umgebungsvariablen & Tokens | 2 |  |
+|  | Code-Refactoring & Performance-Optimierung | 3 |  |
+|  | Erstellung Beispiel-SQL-Queries & Tests | 3 |  |
+|  | Durchführung Modul- & Integrationstests | 8 |  |
+| **Abnahme** | Code-Review durch das Entwicklungsteam | 2 | **5** |
+|  | Abnahme durch Projektverantwortliche | 1 |  |
+|  | Erfolgskontrolle in der Entwicklungsumgebung | 1 |  |
+|  | Integration in die bestehende Pipeline | 1 |  |
+| **Dokumentation** | Erstellung der Projektdokumentation | 2 | **4** |
+|  | Erstellung der Entwicklerdokumentation | 1 |  |
+|  | Erstellung des Benutzerhandbuchs | 1 |  |
+| **Gesamt** |  |  | **70** |
 
-[Hier ergänzen]
 
-### 4.2. Grafische und tabellarische Darstellung
 
-[Hier ergänzen]
 
 ---
 
-## 5. Projektphasen mit Zeitplanung in Stunden
-
-* **Analyse:** [Anzahl] Std.
-* **Entwurf:** [Anzahl] Std.
-* **Implementierung:** [Anzahl] Std.
-* **Abnahme und Einführung:** [Anzahl] Std.
-* **Dokumentation:** [Anzahl] Std.
-
-**Gesamt:** [Anzahl] Std.
-
----
-
-## 6. Name des Ausbilders, bzw. Projektverantwortlichen
+## 5. Name des Ausbilders, bzw. Projektverantwortlichen
 
 [Name hier eintragen]
 
