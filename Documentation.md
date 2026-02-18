@@ -1,0 +1,3 @@
+### Informationen	Phase
+#### Analyse der Pipeline-Struktur und Architektur
+In dieser phase habe ich mich uber die pipeline informieert, besonders welche schritee gibt es und was machen diese schritte. ausserdem habe ich die eingabe und ausgabe von jede schritte gesehen. Dies ist entscheidend, weil damit kann man besser die aufbau und die strukture von jede pipeline schrittte versthen. momentan gibt es 25 schritte, manche von diesen schritten sind deaktiviert, weil ihre aufgaben wurden zu einem anderen schirtte gegeben. der rest der schritte laufen nacheindander mithilfe von eimen wrapper shell script. 
